@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Logic Master: Code Breaker</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+    <!-- <div class="game-container">
+        <h1>Code Breaker</h1>
+        
+        <div class="lives-tag">Lives Remaining: {{ remaining }}</div>
+
+        {% if message %}
+            <h2 class="status-msg {{ status }}">{{ message }}</h2>
+            {% if status != 'playing' %}
+                <a href="/"><button class="btn-play">Start New Game</button></a>
+            {% endif %}
+        {% endif %}
+
+        {% if status == 'playing' %}
+            <form method="POST">
+                <input type="text" name="guess" maxlength="4" minlength="4" required 
+                       pattern="\d{4}" placeholder="0000" autofocus autocomplete="off">
+                <br>
+                <button type="submit" class="btn-submit">Check Logic</button>
+            </form>
+        {% endif %} -->
+    <div class="game-container">
+        <h1>Code Breaker</h1>
+        <form method="POST" class="difficulty-form">
+            <select name="difficulty" onchange="this.form.submit()">
+                <option value="3" {% if length==3 %}selected{% endif %}>Easy (3 Digits)</option>
+                <option value="4" {% if length==4 %}selected{% endif %}>Medium (4 Digits)</option>
+                <option value="5" {% if length==5 %}selected{% endif %}>Hard (5 Digits)</option>
+            </select>
+        </form>
+
+        <div class="lives-tag">Lives: {{ remaining }}</div>
+
+        {% if status == 'playing' %}
+        <form method="POST">
+            <input type="text" name="guess" maxlength="{{ length }}" minlength="{{ length }}" required
+                pattern="\d{ {{ length }} }" placeholder="{{ '0' * length }}" autofocus>
+            <br>
+            <button type="submit" class="btn-submit">Check Logic</button>
+        </form>
+        {% endif %}
+
+        <div class="history-section"> <h3>Guess History</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Guess</th>
+                            <th>Bulls 🐂</th>
+                            <th>Cows 🐄</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for attempt in attempts %}
+                        <tr>
+                            <td>{{ loop.revindex }}</td>
+                            <td>{{ attempt.split('|')[0].replace('Guess: ', '') }}</td>
+                            <td class="bull-count">{{ attempt.split('|')[1].split(',')[0].strip() }}</td>
+                            <td class="cow-count">{{ attempt.split('|')[1].split(',')[1].strip() }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+
+    <script src="/static/script.js"></script>
+
+    <script>
+        const gameMessage = "{{ message }}";
+        if (gameMessage.includes("🏆")) {
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+        }
+    </script>
+</body>
+
+</html>
